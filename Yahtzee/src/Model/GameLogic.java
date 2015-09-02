@@ -17,6 +17,7 @@ public class GameLogic {
 		//run through dice rolled and count number of times a dice face came up
 		for (int i = 0; i < NUMBER_OF_DICE; i++){
 			numberOfTimesRolled[diceRoll[i]]++;
+			
 		}
 		return(numberOfTimesRolled);
 	}
