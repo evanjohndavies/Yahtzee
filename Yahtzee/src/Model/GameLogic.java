@@ -1,63 +1,69 @@
 package Model;
 
+import java.util.ArrayList;
+
 public class GameLogic {
 	
 	
-	public int rollTurn(){
-		return (dice.rollDice());
-		
-	}
 	
-	
-	
-	public int[] countDiceRolled(int[] diceRoll){
+	public int scoreSameDice(ArrayList<Dice> dice, int diceFace){
 		
-		int[] numberOfTimesRolled = new int[NUMBER_OF_SIDES_OF_DICE];
-		
-		//run through dice rolled and count number of times a dice face came up
-		for (int i = 0; i < NUMBER_OF_DICE; i++){
-			numberOfTimesRolled[diceRoll[i]]++;
-			
-		}
-		return(numberOfTimesRolled);
+			return(scoreSameDice(Dice.countDiceRolled(dice), diceFace));
 	}
 	
 	public int scoreSameDice(int[] diceRoll, int diceFace){
-		int score = 0;
-		
-		// sum dice for the diceFace parameter passed
-		for (int i = 0; i< NUMBER_OF_DICE; i++) {
-			if (diceRoll[i] == diceFace){
-				score += diceRoll[i];
-			}
+		// need to have called count dice before calling this method
+		// multiply dice face number by number of dice rolled
+	
+		//bounds testing to make sure input parameters are ok
+		if (diceRoll.length < diceFace){
+			return(diceRoll[diceFace-1]*diceFace);
 		}
-		return(score);
+		return(0);	
+	}
+	
+
+	public int scoreOfAKind(ArrayList<Dice> dice, int numberOfDice){
+		
+			return(scoreOfAKind(Dice.countDiceRolled(dice), numberOfDice));
 	}
 	
 	public int scoreOfAKind(int[] numberOfTimesRolled, int numberOfDice){
 	
-		// calculate score by seeing if any of the dice index is equal
-		// to or greater than the number of dice needed which is passed 
-		// in as numberOfDice
 		
-		for (int i = 0; i< NUMBER_OF_DICE; i++){
-			if (numberOfTimesRolled[i] >= numberOfDice){
-				// calculate score by multiplying dice count by dice face (i)
-				return(numberOfTimesRolled[i]* (i+1));
+			// calculate score by seeing if any of the dice index is equal
+			// to or greater than the number of dice needed which is passed 
+			// in as numberOfDice
+		
+			for (int i = 0; i< numberOfTimesRolled.length; i++){
+				if (numberOfTimesRolled[i] >= numberOfDice){
+					//test if passing for Yahtzee if that case flat score
+					if (numberOfDice == YAHTZEE_DICE){
+						return(YAHTZEE_SCORE);
+					}
+					// else calculate score by multiplying dice count by dice face (i)
+					return(numberOfTimesRolled[i]* (i+1));
+				}
 			}
-			// get here because not sufficient number of dice rolled
-		}
-		
-		// get here because not sufficient number of dice rolled
+		// get here because not sufficient number of dice 
 		return(0);
 	}
 	
+	
+	public int scoreFullHouse(ArrayList<Dice> dice){
+
+		return(scoreFullHouse(Dice.countDiceRolled(dice)));
+	}
+	
 	public int scoreFullHouse(int[] numberOfTimesRolled){
+		
+	
 		// check if have 3 of one kind
-		for (int i = 0; i< NUMBER_OF_DICE; i++){
+		for (int i = 0; i< numberOfTimesRolled.length; i++){
 			if (numberOfTimesRolled[i] == 3){
+					
 				// now check for 2 of a kind
-				for (int j = 0; i< NUMBER_OF_DICE; j++){
+				for (int j = 0; i< numberOfTimesRolled.length; j++){
 					if (numberOfTimesRolled[j] == 2){
 						// get here because conditions satisfied for full house return score 
 						return(FULL_HOUSE_SCORE);
@@ -69,13 +75,30 @@ public class GameLogic {
 		return(0);
 	}
 	
-	public int scoreSmallStraight(int[] numberOfTimesRolled){
-		return(scoreStraight(numberOfTimesRolled, SMALL_STRAIGHT_ENUM));
+	
+	public int scoreSmallStraight(ArrayList<Dice> dice){
+		
+		return(scoreSmallStraight(Dice.countDiceRolled(dice)));
 	}
 	
-	public int scoreLargeStraight(int[] numberOfTimesRolled){
-		return(scoreStraight(numberOfTimesRolled, LARGE_STRAIGHT_ENUM));
+	
+	public int scoreSmallStraight(int[] numberOfTimesRolled){
 		
+		return(scoreStraight(numberOfTimesRolled, SMALL_STRAIGHT_ENUM));
+	}
+
+	
+	
+	public int scoreLargeStraight(ArrayList<Dice> dice){
+		
+		return(scoreLargeStraight(Dice.countDiceRolled(dice)));
+	}
+	
+	
+	public int scoreLargeStraight(int[] numberOfTimesRolled){
+		
+		return(scoreStraight(numberOfTimesRolled, LARGE_STRAIGHT_ENUM));
+
 	}
 	
 	private int scoreStraight(int[] numberOfTimesRolled, int type){
@@ -84,8 +107,8 @@ public class GameLogic {
 		
 		// run through the dice to see how many numbers were NOT rolled
 		// if there is a missing number 
-		for (int i = 0; i < NUMBER_OF_DICE; i++){
-			if (numberOfTimesRolled[i] == 0){
+		for (int i : numberOfTimesRolled){
+			if (i == 0){
 				missedDice++;
 			}
 		}
@@ -106,33 +129,17 @@ public class GameLogic {
 		//get here as qualifications for straight not met so return 0
 		return(0);
 	}
-	
-	public int scoreYahtzee(int[] numberOfTimesRolled){
-		
-		// run through the dice to see if there are 5 on one kind rolled
-		// if there is a missing number 
-		for (int i = 0; i < NUMBER_OF_DICE; i++){
-			if (numberOfTimesRolled[i] == 5){
-				return(YAHTZEE_SCORE);
-			}
-		}
-		// get here as there was not Yahtzee condition met return 0
-		return(0);	
-	}
-		
 
-
-	private static final int NUMBER_OF_DICE = 5;
-	private static final int NUMBER_OF_SIDES_OF_DICE = 6;
+		
 	private static final int SMALL_STRAIGHT_ENUM = 12;
 	private static final int LARGE_STRAIGHT_ENUM = 13;
 	private static final int LARGE_STRAIGHT_SCORE = 40;
 	private static final int SMALL_STRAIGHT_SCORE = 30;
 	private static final int FULL_HOUSE_SCORE = 25;
+	private static final int YAHTZEE_DICE = 5;
 	private static final int YAHTZEE_SCORE = 50;
 
 	
 	
-	private Dice dice = new Dice();
 
 }
