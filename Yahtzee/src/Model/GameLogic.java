@@ -14,9 +14,9 @@ public class GameLogic {
 	public int scoreSameDice(int[] diceRoll, int diceFace){
 		// need to have called count dice before calling this method
 		// multiply dice face number by number of dice rolled
-	
+
 		//bounds testing to make sure input parameters are ok
-		if (diceRoll.length < diceFace){
+		if (diceRoll.length >= diceFace){
 			return(diceRoll[diceFace-1]*diceFace);
 		}
 		return(0);	
@@ -36,13 +36,14 @@ public class GameLogic {
 			// in as numberOfDice
 		
 			for (int i = 0; i< numberOfTimesRolled.length; i++){
+
 				if (numberOfTimesRolled[i] >= numberOfDice){
 					//test if passing for Yahtzee if that case flat score
 					if (numberOfDice == YAHTZEE_DICE){
 						return(YAHTZEE_SCORE);
 					}
 					// else calculate score by multiplying dice count by dice face (i)
-					return(numberOfTimesRolled[i]* (i+1));
+					return((numberOfTimesRolled[i]* (i+1)));
 				}
 			}
 		// get here because not sufficient number of dice 
@@ -63,7 +64,7 @@ public class GameLogic {
 			if (numberOfTimesRolled[i] == 3){
 					
 				// now check for 2 of a kind
-				for (int j = 0; i< numberOfTimesRolled.length; j++){
+				for (int j = 0; j< numberOfTimesRolled.length; j++){
 					if (numberOfTimesRolled[j] == 2){
 						// get here because conditions satisfied for full house return score 
 						return(FULL_HOUSE_SCORE);
@@ -138,8 +139,6 @@ public class GameLogic {
 	private static final int FULL_HOUSE_SCORE = 25;
 	private static final int YAHTZEE_DICE = 5;
 	private static final int YAHTZEE_SCORE = 50;
-
-	
 	
 
 }

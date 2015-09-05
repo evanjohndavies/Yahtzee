@@ -9,6 +9,7 @@ public class Dice {
 
 	public Dice (){
 		// default constructor needed as there is one with variable passed
+		rollDice();
 	}
 	
 	public Dice (boolean testMode){
@@ -16,40 +17,51 @@ public class Dice {
 		if (testMode){
 			randomObject.setSeed(0);
 		}
+		rollDice();
 	}
 	
 	
 	public static void rollDice(ArrayList<Dice> dice){
 		
 		for ( Dice d : dice){
-		  Dice.rollDice(d);
+		  d.rollDice();
 		}
 	}
 	
-	public static void rollDice(Dice dice){
+	public void rollDice(){
 		
-		dice.face = randomObject.nextInt(SIDES_OF_DICE)+1;
+		face = randomObject.nextInt(SIDES_OF_DICE)+1;
 		
 	}
 	
-
+	public static int[] countDiceRolled(int[] diceRolled){
+		int[] numberOfTimesRolled = new int[SIDES_OF_DICE];
+		
+			//run through dice rolled and count number of times a dice face came up
+			// shorthand for loop for collections
+			for (int d : diceRolled){
+				numberOfTimesRolled[d-1]++;
+			}
+		return(numberOfTimesRolled);
+		
+	}
 	
 	public static int[] countDiceRolled(ArrayList<Dice> diceRoll){
 		
-		int[] numberOfTimesRolled = new int[NUMBER_OF_SIDES_OF_DICE];
+		int[] numberOfTimesRolled = new int[SIDES_OF_DICE];
 		
 		//run through dice rolled and count number of times a dice face came up
 		// shorthand for loop for collections
 		for (Dice d : diceRoll){
-			numberOfTimesRolled[d.getDiceValue(d)-1]++;
+			numberOfTimesRolled[d.getDiceValue()-1]++;
 		}
 		return(numberOfTimesRolled);
 	}
 
 	
-	public int getDiceValue(Dice dice){
+	public int getDiceValue(){
 		
-		return(dice.face);
+		return(face);
 	}
 	
 	public static String toString (ArrayList <Dice> diceRoll){
@@ -78,11 +90,6 @@ public class Dice {
 		}
 		return(returnString);
 	}
-
-
-
-	private static final int NUMBER_OF_SIDES_OF_DICE = 6;
-	private static final int NUMBER_OF_DICE =5;
 
 	private int face;
 	private static Random randomObject = new Random();

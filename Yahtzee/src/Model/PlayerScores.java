@@ -15,7 +15,7 @@ public class PlayerScores {
 	
 	public void setScore(int position, int score){
 		// bound check
-		if (position < NUMBER_SCORES){
+		if (position <= scores.length){
 			scores[position] = score;
 		}
 	}
@@ -53,6 +53,18 @@ public class PlayerScores {
 		scores[TOTAL_POSITION]= scores[UPPER_SCORE_POSITION] + 
 								scores[BONUS_SCORE_POSITION] + 
 								scores[LOWER_SCORE_POSITION]; 
+		
+	}
+	
+	public void printScores(){
+		int i=0;
+		
+		
+		for (String category: scoreName){
+					System.out.println(category + ": " + scores[i++]);
+			
+		}
+
 		
 	}
 	
