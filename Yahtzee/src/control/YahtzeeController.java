@@ -6,24 +6,37 @@ import Model.Dice;
 import Model.GameLogic;
 import Model.PlayerScores;
 import acm.program.GraphicsProgram;
+import view.DiceGraphics;
+import view.GameCanvas;
 
 public class YahtzeeController extends GraphicsProgram{
 	
 	public YahtzeeController(){
 		
+		double yOffset = 0;
+
+		
 		for (int i=0; i< NUMBER_OF_DICE; i++){
 			dice.add(new Dice(false));
+			diceGraphics.add(new DiceGraphics());
+		}
+		
+		for (DiceGraphics die : diceGraphics){
+			add(die.getGraphicObject(), 0, yOffset);
+			yOffset += die.getGraphicObject().getHeight() + 10;
+			
 		}
 	}
 	
 	
-	
-	
-	
 	public void run(){
-					
-		testDice();
+		int i =0;	
 		
+		Dice.rollDice(dice);
+		
+		for (Dice d: dice){
+			diceGraphics.get(i++).setDiceValue(d.getDiceValue());
+		}
 }
 	
 	private void testDice (){
@@ -87,7 +100,10 @@ public class YahtzeeController extends GraphicsProgram{
 	
 	private GameLogic game = new GameLogic();
 	private ArrayList<Dice> dice = new ArrayList<Dice>();
+	private ArrayList<DiceGraphics> diceGraphics = new ArrayList<DiceGraphics>();
 	private Dice die = new Dice(true);
 	private PlayerScores player1 = new PlayerScores();
+	private GameCanvas canvas;
+
 
 }
