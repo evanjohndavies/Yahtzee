@@ -1,10 +1,14 @@
 package control;
 
+import java.awt.Point;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 import Model.Dice;
 import Model.GameLogic;
 import Model.PlayerScores;
+import acm.graphics.GLabel;
+import acm.graphics.GObject;
 import acm.program.GraphicsProgram;
 import view.DiceGraphics;
 import view.GameCanvas;
@@ -24,20 +28,58 @@ public class YahtzeeController extends GraphicsProgram{
 		for (DiceGraphics die : diceGraphics){
 			add(die.getGraphicObject(), 0, yOffset);
 			yOffset += die.getGraphicObject().getHeight() + 10;
-			
 		}
+		
+		rollAgain.setVisible(true);
+		add(rollAgain, 100, 100);
+		
+		addMouseListeners();
 	}
 	
 	
+	
 	public void run(){
-		int i =0;	
+
+		rollDice();
 		
+		while(true){
+			
+		}
+		
+	}
+	
+	private void rollDice(){
+		
+		int i =0;	
 		Dice.rollDice(dice);
 		
 		for (Dice d: dice){
 			diceGraphics.get(i++).setDiceValue(d.getDiceValue());
 		}
-}
+		
+	}
+	
+	
+	
+	public void mouseClicked(MouseEvent mouseEvent){
+
+		Point coordinate = mouseEvent.getPoint();
+		
+		
+		GObject gameElement = getElementAt(coordinate.getX(), coordinate.getY());
+		if(gameElement != null){
+			if (gameElement.equals(rollAgain)){
+				rollDice();
+			}
+			
+			for (DiceGraphics d: diceGraphics){
+				if (gameElement.equals(d.getGraphicObject())){
+					d.selectDie();
+				}
+			}
+		}		
+	}
+	
 	
 	private void testDice (){
 		
@@ -104,6 +146,6 @@ public class YahtzeeController extends GraphicsProgram{
 	private Dice die = new Dice(true);
 	private PlayerScores player1 = new PlayerScores();
 	private GameCanvas canvas;
-
+	private GLabel rollAgain = new GLabel("Roll Again");
 
 }

@@ -1,5 +1,6 @@
 package view;
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import acm.graphics.GArc;
@@ -20,6 +21,44 @@ public class DiceGraphics {
 	
 	public GObject getGraphicObject(){
 		return(dieGraphics);
+	}
+	
+	public void selectDie(){
+		
+		selected = !selected;
+		updateDieSelected(selected);
+		
+	}
+	
+	
+	private void updateDieSelected(boolean val){
+		
+		Color color;
+		Class<GRect> recCls = GRect.class;  // get class type for GRect to compare object below
+		Class<GArc> arcCls = GArc.class;	// get class type for GArc to compare object below
+		GRect recTemp;
+		GArc arcTemp;
+		
+		if (val){
+			color = highlightColor;
+		}else{
+			color = fillColor;
+		}
+		
+		for (GObject o: diceParts){
+			
+			if (recCls.isInstance(o)){
+				recTemp = (GRect) o;
+				recTemp.setFillColor(color);
+				recTemp.setColor(color);
+			}else{
+				if(arcCls.isInstance(o)){
+					arcTemp = (GArc) o;
+					arcTemp.setFillColor(color);
+				}
+			}
+		}
+		
 	}
 	
 	public void setDiceValue (int value){
@@ -90,12 +129,14 @@ public class DiceGraphics {
 		double width = 0;
 		double height = 0;
 		
-		
 		GCompound dice = new GCompound();
+
 		GLine rhSide = new GLine(0,0,0,DICE_SIDE_LENGTH);
 		rhSide.setVisible(true);
+		
 		GLine lhSide = new GLine(0,0,0,DICE_SIDE_LENGTH);
 		lhSide.setVisible(true);
+
 		GLine topSide = new GLine(0,0,DICE_SIDE_LENGTH,0);
 		topSide.setVisible(true);
 		GLine bottomSide = new GLine(0,0,DICE_SIDE_LENGTH,0);
@@ -105,38 +146,46 @@ public class DiceGraphics {
 		width = DICE_SIDE_LENGTH+(2*DICE_ARC_LENGTH);
 		height = DICE_SIDE_LENGTH;
 		GRect fillHorizontal = new GRect(0,0,width,height);
-		fillHorizontal.setColor(Color.WHITE);
+		diceParts.add(fillHorizontal);
+		fillHorizontal.setFillColor(fillColor);
+		fillHorizontal.setColor(fillColor);
 		fillHorizontal.setFilled(true);
 		fillHorizontal.setVisible(true);
 		
 		GRect fillVertical = new GRect(0,0,height, width);
-		fillVertical.setColor(Color.WHITE);
+		fillVertical.setFillColor(fillColor);
+		fillVertical.setColor(fillColor);
+		diceParts.add(fillVertical);
 		fillVertical.setFilled(true);
 		fillVertical.setVisible(true);
 		
 		
 
 		// top left dice corner
-		GArc tlArc = new GArc(DICE_ARC_LENGTH*2, DICE_ARC_LENGTH*2,90,90);		
-		tlArc.setFillColor(Color.WHITE);
+		GArc tlArc = new GArc(DICE_ARC_LENGTH*2, DICE_ARC_LENGTH*2,90,90);	
+		diceParts.add(tlArc);
+		tlArc.setFillColor(fillColor);
 		tlArc.setFilled(true);
 		tlArc.setVisible(true);
 
 		// top right dice corner
-		GArc trArc = new GArc(0,0, DICE_ARC_LENGTH*2, DICE_ARC_LENGTH*2,0,90);		
-		trArc.setFillColor(Color.WHITE);
+		GArc trArc = new GArc(0,0, DICE_ARC_LENGTH*2, DICE_ARC_LENGTH*2,0,90);
+		diceParts.add(trArc);
+		trArc.setFillColor(fillColor);
 		trArc.setFilled(true);
 		trArc.setVisible(true);
 
 		// bottom left corner
 		GArc blArc = new GArc(0,0, DICE_ARC_LENGTH*2, DICE_ARC_LENGTH*2,180,90);		
-		blArc.setFillColor(Color.WHITE);
+		diceParts.add(blArc);
+		blArc.setFillColor(fillColor);
 		blArc.setFilled(true);
 		blArc.setVisible(true);	
 		
 		// bottom right corner
 		GArc brArc = new GArc(0,0, DICE_ARC_LENGTH*2, DICE_ARC_LENGTH*2,270,90);
-		brArc.setFillColor(Color.WHITE);
+		diceParts.add(brArc);
+		brArc.setFillColor(fillColor);
 		brArc.setFilled(true);
 		brArc.setVisible(true);		
 		
@@ -202,6 +251,10 @@ public class DiceGraphics {
 	private GOval[] diceDots = new GOval[TOTAL_DOTS];
 	private GCompound dieGraphics = new GCompound();
 	private static HashMap<Integer,boolean[]> dotPosition = new HashMap<Integer, boolean[]>();
+	private boolean selected = false;
+	private ArrayList<GObject> diceParts = new ArrayList<GObject>();
+	private Color fillColor = Color.WHITE;
+	private Color highlightColor = Color.LIGHT_GRAY;
 
 	
 }
