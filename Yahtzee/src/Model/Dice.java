@@ -30,7 +30,9 @@ public class Dice {
 	
 	public void rollDice(){
 		
-		face = randomObject.nextInt(SIDES_OF_DICE)+1;
+		if (!getSelectedState()){
+			face = randomObject.nextInt(SIDES_OF_DICE)+1;
+		}
 		
 	}
 	
@@ -64,6 +66,18 @@ public class Dice {
 		return(face);
 	}
 	
+	public void setSelectedState(){
+		
+		// toggle state of dice to either be rolled or not on call to roll dice
+		diceSelected = !diceSelected;
+	}
+	
+	public boolean getSelectedState(){
+		
+		return(diceSelected);
+	}
+	
+	
 	public static String toString (ArrayList <Dice> diceRoll){
 		
 		 String returnString = "Dice Roll: ";
@@ -94,6 +108,6 @@ public class Dice {
 	private int face;
 	private static Random randomObject = new Random();
 	private final static int SIDES_OF_DICE = 6;
-	
+	private boolean diceSelected = false;  // used to determine if dice is to be rolled or not
 	
 }

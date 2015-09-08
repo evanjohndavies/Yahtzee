@@ -17,8 +17,13 @@ public class YahtzeeController extends GraphicsProgram{
 	
 	public YahtzeeController(){
 		
-		double yOffset = 0;
+		double yOffset = 100;
+		double xOffset = 30;
 
+		
+		rollAgain.setVisible(true);
+		add(rollAgain, xOffset, ((yOffset/2) - .5* (rollAgain.getHeight())));
+		
 		
 		for (int i=0; i< NUMBER_OF_DICE; i++){
 			dice.add(new Dice(false));
@@ -26,12 +31,11 @@ public class YahtzeeController extends GraphicsProgram{
 		}
 		
 		for (DiceGraphics die : diceGraphics){
-			add(die.getGraphicObject(), 0, yOffset);
+			add(die.getGraphicObject(), xOffset, yOffset);
 			yOffset += die.getGraphicObject().getHeight() + 10;
 		}
 		
-		rollAgain.setVisible(true);
-		add(rollAgain, 100, 100);
+
 		
 		addMouseListeners();
 	}
@@ -75,6 +79,7 @@ public class YahtzeeController extends GraphicsProgram{
 			for (DiceGraphics d: diceGraphics){
 				if (gameElement.equals(d.getGraphicObject())){
 					d.selectDie();
+					dice.get(diceGraphics.indexOf(d)).setSelectedState();
 				}
 			}
 		}		
