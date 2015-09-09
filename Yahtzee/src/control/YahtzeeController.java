@@ -11,6 +11,7 @@ import acm.graphics.GLabel;
 import acm.graphics.GObject;
 import acm.graphics.GRect;
 import acm.program.GraphicsProgram;
+import view.CategoryGraphics;
 import view.DiceGraphics;
 import view.GameCanvas;
 import view.PlayerGraphics;
@@ -46,6 +47,11 @@ public class YahtzeeController extends GraphicsProgram{
 		
 		add(categoryDisplay.getCategoryGridObject(), X_INDEX_START, TOP_BOARDER);
 		
+		addPlayer();
+		currentPlayer = 0;
+		currentPlayerScore = playerList.get(currentPlayer);
+		currentPlayerGraphics = playerListGraphics.get(currentPlayer);
+		
 		addMouseListeners();
 	}
 	
@@ -56,18 +62,27 @@ public class YahtzeeController extends GraphicsProgram{
 		double xOffset = 0;
 		double yOffset = 0;
 		PlayerGraphics temp;
+		ArrayList<GObject> scoreDisplayObjectList;
+		
+
 		
 		playerList.add(new PlayerScores());
 		
 		temp = new PlayerGraphics();
 		playerListGraphics.add(temp);
 		
+		scoreDisplayObjectList = temp.getPlayerGridObjects();
+		
 		xOffset = X_INDEX_START + categoryDisplay.getCategoryGridObject().getWidth()
-		+ (numberOfPlayers * temp.getPlayerGridObject().getWidth());
+		+ (numberOfPlayers*scoreDisplayObjectList.get(0).getWidth());
 		
-		yOffset = TOP_BOARDER;
+		yOffset = TOP_BOARDER + scoreDisplayObjectList.get(0).getHeight();
 		
-		add(temp.getPlayerGridObject(),xOffset, yOffset);
+		for (GObject o: scoreDisplayObjectList){
+			add(o,xOffset, yOffset);
+			yOffset += o.getHeight();
+		}
+		
 		numberOfPlayers++;
 
 	}
@@ -76,13 +91,18 @@ public class YahtzeeController extends GraphicsProgram{
 	
 	public void run(){
 		
+		PlayerScores playerScore;
 		
 		addPlayer();
+
 		rollDice();
 		
-		addPlayer();
 		
 		while(true){
+			for(PlayerGraphics playerGraphics: playerListGraphics){
+				
+				
+			}
 			
 		}
 		
@@ -105,21 +125,71 @@ public class YahtzeeController extends GraphicsProgram{
 
 		Point coordinate = mouseEvent.getPoint();
 		
-		
 		GObject gameElement = getElementAt(coordinate.getX(), coordinate.getY());
+
 		if(gameElement != null){
-			if (gameElement.equals(rollAgain)){
-				rollDice();
+			takeActionOnClick(gameElement);
 			}
-			
-			for (DiceGraphics d: diceGraphics){
-				if (gameElement.equals(d.getGraphicObject())){
-					d.selectDie();
-					dice.get(diceGraphics.indexOf(d)).setSelectedState();
-				}
-			}
-		}		
 	}
+	
+	private void takeActionOnClick(GObject gameElement){
+		
+		if (CheckDiceObjectClicked(gameElement)){
+			return;
+		}
+		
+		if (getCurrentUserGraphics().checkScoreObjectSelected(gameElement)){
+			System.out.println("game score element clicked");
+		}
+		
+		
+	}
+	
+	
+	private boolean CheckDiceObjectClicked(GObject gameElement){
+		
+		
+		if (gameElement.equals(rollAgain)){
+			rollDice();
+			return(true);
+		}
+		
+		for (DiceGraphics d: diceGraphics){
+			if (gameElement.equals(d.getGraphicObject())){
+				d.selectDie();
+				dice.get(diceGraphics.indexOf(d)).setSelectedState();
+				return(true);
+			}
+		}
+		return(false);
+		
+	}
+	
+	
+	
+	
+	private void setNextUser(){
+		
+		
+		if (currentPlayer < numberOfPlayers){
+			currentPlayer++;
+		} else{
+			currentPlayer = 0;
+		}
+		
+		currentPlayer++;
+		currentPlayerScore = playerList.get(currentPlayer);
+		currentPlayerGraphics = playerListGraphics.get(currentPlayer);
+		
+	}
+	
+	private PlayerGraphics getCurrentUserGraphics(){
+		
+		return (playerListGraphics.get(currentPlayer));
+		
+	}
+	
+	
 	
 	
 	private void testDice (){
@@ -189,6 +259,10 @@ public class YahtzeeController extends GraphicsProgram{
 	// objects to track player graphics and player scores
 	private ArrayList<PlayerScores> playerList = new ArrayList<PlayerScores>();
 	private ArrayList<PlayerGraphics> playerListGraphics = new ArrayList<PlayerGraphics>();
+	private PlayerScores currentPlayerScore = null;
+	private PlayerGraphics currentPlayerGraphics = null;
+	private int currentPlayer = 0;
+	
 	
 	private Dice die = new Dice(true);
 	private PlayerScores player1 = new PlayerScores();
@@ -196,6 +270,7 @@ public class YahtzeeController extends GraphicsProgram{
 	private GLabel rollAgain = new GLabel("Roll Again");
 	private CategoryGraphics categoryDisplay = new CategoryGraphics();
 	private int numberOfPlayers = 0;
+
 	
 
 

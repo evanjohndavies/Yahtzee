@@ -2,6 +2,7 @@ package view;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.util.ArrayList;
 
 import acm.graphics.*;
 
@@ -15,24 +16,36 @@ public class PlayerGraphics {
 	}
 	
 	
-	public GObject getPlayerGridObject(){
+	public ArrayList<GObject> getPlayerGridObjects(){
 		
-		return(playerGrid);
+		return(displayElements);
 		
+	}
+	
+	public boolean checkScoreObjectSelected(GObject gameElement){
+		
+		GObject temp;
+		
+		for ( UserScoreDisplay object: scores){
+			
+			temp = object.getScoreDisplayObject();
+			if(gameElement.equals(object.getScoreDisplayObject())){
+				System.out.println("clicked on score object");
+				// TO-DO
+				return(true);
+			}
+			
+		}
+		return(false);
 	}
 	
 	
 	private void createPlayerGrid(){
-		
-		double yOffset = 0;
-		
-		
+				
 		for (int i=0; i< MAX_SCORES; i++){
-			
 			scores[i] = new UserScoreDisplay();
 			scores[i].setIndex(i);
-			playerGrid.add(scores[i].getScoreDisplayObject(),0,yOffset);
-			yOffset += CELL_HEIGHT;
+			displayElements.add(scores[i].getScoreDisplayObject());
 		}
 		
 	}
@@ -44,8 +57,7 @@ public class PlayerGraphics {
 	private static final int MAX_SCORES = 17;
 
 	
-	private GCompound playerGrid = new GCompound ();
-
+	private ArrayList<GObject> displayElements = new ArrayList<GObject>();
 	private UserScoreDisplay[] scores = new UserScoreDisplay[MAX_SCORES];
 	
 
