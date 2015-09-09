@@ -9,21 +9,30 @@ import Model.GameLogic;
 import Model.PlayerScores;
 import acm.graphics.GLabel;
 import acm.graphics.GObject;
+import acm.graphics.GRect;
 import acm.program.GraphicsProgram;
 import view.DiceGraphics;
 import view.GameCanvas;
+import view.PlayerGraphics;
+
 
 public class YahtzeeController extends GraphicsProgram{
 	
 	public YahtzeeController(){
 		
-		double yOffset = 100;
-		double xOffset = 30;
+		double yOffset = TOP_BOARDER;
+		double xOffset = SIDE_BOARDER;
+		GRect temp;
 
 		
-		rollAgain.setVisible(true);
-		add(rollAgain, xOffset, ((yOffset/2) - .5* (rollAgain.getHeight())));
+
+		temp = new GRect(0,0,80,20);
+		add(temp,xOffset, yOffset);
 		
+		add(rollAgain, (xOffset + (temp.getWidth() - rollAgain.getWidth())/2), 
+						yOffset+ rollAgain.getHeight() + (rollAgain.getHeight()-temp.getHeight())/2);
+		
+		yOffset += temp.getHeight() + 20;
 		
 		for (int i=0; i< NUMBER_OF_DICE; i++){
 			dice.add(new Dice(false));
@@ -35,16 +44,43 @@ public class YahtzeeController extends GraphicsProgram{
 			yOffset += die.getGraphicObject().getHeight() + 10;
 		}
 		
-
+		add(categoryDisplay.getCategoryGridObject(), X_INDEX_START, TOP_BOARDER);
 		
 		addMouseListeners();
 	}
 	
 	
 	
-	public void run(){
+	private void addPlayer(){
+		
+		double xOffset = 0;
+		double yOffset = 0;
+		PlayerGraphics temp;
+		
+		playerList.add(new PlayerScores());
+		
+		temp = new PlayerGraphics();
+		playerListGraphics.add(temp);
+		
+		xOffset = X_INDEX_START + categoryDisplay.getCategoryGridObject().getWidth()
+		+ (numberOfPlayers * temp.getPlayerGridObject().getWidth());
+		
+		yOffset = TOP_BOARDER;
+		
+		add(temp.getPlayerGridObject(),xOffset, yOffset);
+		numberOfPlayers++;
 
+	}
+	
+	
+	
+	public void run(){
+		
+		
+		addPlayer();
 		rollDice();
+		
+		addPlayer();
 		
 		while(true){
 			
@@ -139,18 +175,28 @@ public class YahtzeeController extends GraphicsProgram{
 	private static final int SMALL_STRAIGHT = 11;
 	private static final int LARGE_STRAIGHT = 12;
 	private static final int YAHTZEE = 13;
-
-	
-	
-
+	private static final int TOP_BOARDER = 25;
+	private static final int SIDE_BOARDER = 25;
+	private static final int X_INDEX_START = 150;
 
 	
 	private GameLogic game = new GameLogic();
+	
+	// objects to track dice graphics and dice logic
 	private ArrayList<Dice> dice = new ArrayList<Dice>();
 	private ArrayList<DiceGraphics> diceGraphics = new ArrayList<DiceGraphics>();
+		
+	// objects to track player graphics and player scores
+	private ArrayList<PlayerScores> playerList = new ArrayList<PlayerScores>();
+	private ArrayList<PlayerGraphics> playerListGraphics = new ArrayList<PlayerGraphics>();
+	
 	private Dice die = new Dice(true);
 	private PlayerScores player1 = new PlayerScores();
 	private GameCanvas canvas;
 	private GLabel rollAgain = new GLabel("Roll Again");
+	private CategoryGraphics categoryDisplay = new CategoryGraphics();
+	private int numberOfPlayers = 0;
+	
+
 
 }
