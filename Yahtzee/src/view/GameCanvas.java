@@ -12,7 +12,8 @@ public class GameCanvas {
 	}
 	
 	
-	public boolean processMouseClicked(GObject item){
+	
+	public boolean processMMouseClicked(GObject item){
 		
 		if(item.equals(rollAgain)){
 			return(true);

@@ -7,35 +7,32 @@ import java.util.ArrayList;
 import Model.Dice;
 import Model.GameLogic;
 import Model.PlayerScores;
-import acm.graphics.GLabel;
+import Model.Constants;
 import acm.graphics.GObject;
-import acm.graphics.GRect;
 import acm.program.GraphicsProgram;
 import view.CategoryGraphics;
 import view.DiceGraphics;
-import view.GameCanvas;
 import view.PlayerGraphics;
+import view.TextLabel;
+import view.UserScoreDisplay;
 
 
 public class YahtzeeController extends GraphicsProgram{
 	
 	public YahtzeeController(){
 		
-		double yOffset = TOP_BOARDER;
-		double xOffset = SIDE_BOARDER;
-		GRect temp;
+		double yOffset = Constants.TOP_BOARDER;
+		double xOffset = Constants.SIDE_BOARDER;
 
 		
+		game = new GameLogic();
 
-		temp = new GRect(0,0,80,20);
-		add(temp,xOffset, yOffset);
+		rollAgain = new TextLabel(100,30,"Roll Again");
+		add(rollAgain.getLabelDisplay(), xOffset, yOffset);
 		
-		add(rollAgain, (xOffset + (temp.getWidth() - rollAgain.getWidth())/2), 
-						yOffset+ rollAgain.getHeight() + (rollAgain.getHeight()-temp.getHeight())/2);
+		yOffset += rollAgain.getLabelDisplay().getHeight() * 2;
 		
-		yOffset += temp.getHeight() + 20;
-		
-		for (int i=0; i< NUMBER_OF_DICE; i++){
+		for (int i=0; i< Constants.NUMBER_OF_DICE; i++){
 			dice.add(new Dice(false));
 			diceGraphics.add(new DiceGraphics());
 		}
@@ -45,11 +42,11 @@ public class YahtzeeController extends GraphicsProgram{
 			yOffset += die.getGraphicObject().getHeight() + 10;
 		}
 		
-		add(categoryDisplay.getCategoryGridObject(), X_INDEX_START, TOP_BOARDER);
+		add(categoryDisplay.getCategoryGridObject(), Constants.X_INDEX_START, Constants.TOP_BOARDER);
 		
 		addPlayer();
 		currentPlayer = 0;
-		currentPlayerScore = playerList.get(currentPlayer);
+		currentPlayerScore = playerListScores.get(currentPlayer);
 		currentPlayerGraphics = playerListGraphics.get(currentPlayer);
 		
 		addMouseListeners();
@@ -66,17 +63,19 @@ public class YahtzeeController extends GraphicsProgram{
 		
 
 		
-		playerList.add(new PlayerScores());
+		playerListScores.add(new PlayerScores());
 		
 		temp = new PlayerGraphics();
 		playerListGraphics.add(temp);
 		
 		scoreDisplayObjectList = temp.getPlayerGridObjects();
 		
-		xOffset = X_INDEX_START + categoryDisplay.getCategoryGridObject().getWidth()
+		xOffset = Constants.X_INDEX_START + categoryDisplay.getCategoryGridObject().getWidth()
 		+ (numberOfPlayers*scoreDisplayObjectList.get(0).getWidth());
 		
-		yOffset = TOP_BOARDER + scoreDisplayObjectList.get(0).getHeight();
+		yOffset = Constants.TOP_BOARDER + scoreDisplayObjectList.get(0).getHeight();
+		
+
 		
 		for (GObject o: scoreDisplayObjectList){
 			add(o,xOffset, yOffset);
@@ -99,13 +98,9 @@ public class YahtzeeController extends GraphicsProgram{
 		
 		
 		while(true){
-			for(PlayerGraphics playerGraphics: playerListGraphics){
-				
-				
-			}
+					
 			
 		}
-		
 	}
 	
 	private void rollDice(){
@@ -134,14 +129,23 @@ public class YahtzeeController extends GraphicsProgram{
 	
 	private void takeActionOnClick(GObject gameElement){
 		
+		UserScoreDisplay temp;
+		Integer scoreCellIndex;
+		
+		// Check if user clicked on a dice
 		if (CheckDiceObjectClicked(gameElement)){
 			return;
 		}
 		
+		// check to see if user clicked on a score cell for current player
 		if (getCurrentUserGraphics().checkScoreObjectSelected(gameElement)){
-			System.out.println("game score element clicked");
-		}
-		
+			
+			scoreCellIndex = getCurrentUserGraphics().getIndexScoreObjectSelected(gameElement);
+			if (scoreCellIndex != null){				
+				getCurrentUserGraphics().setDipslayObject(scoreCellIndex, scoreDice(dice,scoreCellIndex));
+				getCurrentUserScores().setScore(scoreCellIndex,scoreDice(dice,scoreCellIndex));
+			}
+		}		
 		
 	}
 	
@@ -149,7 +153,7 @@ public class YahtzeeController extends GraphicsProgram{
 	private boolean CheckDiceObjectClicked(GObject gameElement){
 		
 		
-		if (gameElement.equals(rollAgain)){
+		if (gameElement.equals(rollAgain.getLabelDisplay())){
 			rollDice();
 			return(true);
 		}
@@ -178,7 +182,7 @@ public class YahtzeeController extends GraphicsProgram{
 		}
 		
 		currentPlayer++;
-		currentPlayerScore = playerList.get(currentPlayer);
+		currentPlayerScore = playerListScores.get(currentPlayer);
 		currentPlayerGraphics = playerListGraphics.get(currentPlayer);
 		
 	}
@@ -187,6 +191,77 @@ public class YahtzeeController extends GraphicsProgram{
 		
 		return (playerListGraphics.get(currentPlayer));
 		
+	}
+	
+	private PlayerScores getCurrentUserScores(){
+		return(playerListScores.get(currentPlayer));
+		
+	}
+	
+	
+	private int scoreDice(ArrayList<Dice> dice, int scoreType){
+		
+		switch (scoreType){
+		
+		case(Constants.ONES_ENUM): 
+			System.out.println("1s score = " +game.scoreSameDice(dice, 1));
+			return (game.scoreSameDice(dice, 1));
+			
+		case(Constants.TWOES_ENUM): 
+			System.out.println("2s score = " +game.scoreSameDice(dice, 2));
+			return (game.scoreSameDice(dice, 2));
+			
+		case(Constants.THREES_ENUM): 
+			System.out.println("3s score = " +game.scoreSameDice(dice, 3));
+			return (game.scoreSameDice(dice, 3));
+			
+		case(Constants.FOURS_ENUM): 
+			System.out.println("4s score = " +game.scoreSameDice(dice, 4));
+			return (game.scoreSameDice(dice, 4));
+			
+		case(Constants.FIVES_ENUM): 
+			System.out.println("5s score = " +game.scoreSameDice(dice, 5));
+			return (game.scoreSameDice(dice, 5));
+			
+		case(Constants.SIXES_ENUM): 
+			System.out.println("6s score = " +game.scoreSameDice(dice, 6));
+			return (game.scoreSameDice(dice, 6));
+			
+		case(Constants.THREE_OF_A_KIND_ENUM): 
+			System.out.println("3K score = " +game.scoreOfAKind(dice, 3));
+			return (game.scoreOfAKind(dice, 3));
+						
+		case(Constants.FOUR_OF_A_KIND_ENUM): 
+			System.out.println("4K score = " +game.scoreOfAKind(dice, 4));
+			return (game.scoreOfAKind(dice, 4));
+			
+		case(Constants.YAHTZEE_ENUM): 
+			System.out.println("Yahtzee score = " +game.scoreOfAKind(dice, 5));
+			return (game.scoreOfAKind(dice, 5));	
+			
+		case(Constants.FULL_HOUSE_ENUM): 
+			System.out.println("3K score = " +game.scoreFullHouse(dice));
+			return (game.scoreFullHouse(dice));
+		
+		case(Constants.SMALL_STRAIGHT_ENUM): 
+			System.out.println("SS score = " +game.scoreSmallStraight(dice));
+			return (game.scoreSmallStraight(dice));	
+			
+		case(Constants.LARGE_STRAIGHT_ENUM): 
+			System.out.println("LS score = " +game.scoreLargeStraight(dice));
+			return (game.scoreLargeStraight(dice));	
+
+		case(Constants.CHANCE_ENUM): 
+			System.out.println("Chance score = " +game.scoreChance(dice));
+			return (game.scoreChance(dice));				
+		
+		default:
+			System.out.println("No score Type = " );
+			break;
+		}
+		
+		return(0);
+			
 	}
 	
 	
@@ -212,19 +287,19 @@ public class YahtzeeController extends GraphicsProgram{
 		System.out.println(Dice.toString(dice));
 		System.out.println(Dice.toString(Dice.countDiceRolled(dice)));
 			
-		player1.setScore(ONES -1, game.scoreSameDice(test12,ONES));
-		player1.setScore(TWOES -1, game.scoreSameDice(test22,TWOES));
-		player1.setScore(THREES-1, game.scoreSameDice(test33,THREES));
-		player1.setScore(FOURS-1, game.scoreSameDice(test44,FOURS));
-		player1.setScore(FIVES-1, game.scoreSameDice(test55,FIVES));
-		player1.setScore(SIXES-1, game.scoreSameDice(test66,SIXES));
+		player1.setScore(Constants.ONES_ENUM, game.scoreSameDice(test12,1));
+		player1.setScore(Constants.TWOES_ENUM, game.scoreSameDice(test22,2));
+		player1.setScore(Constants.THREES_ENUM, game.scoreSameDice(test33,3));
+		player1.setScore(Constants.FOURS_ENUM, game.scoreSameDice(test44,4));
+		player1.setScore(Constants.FIVES_ENUM, game.scoreSameDice(test55,5));
+		player1.setScore(Constants.SIXES_ENUM, game.scoreSameDice(test66,6));
 		
-		player1.setScore(FULL_HOUSE, game.scoreFullHouse(testFH));
-		player1.setScore(SMALL_STRAIGHT, game.scoreSmallStraight(testSS));
-		player1.setScore(LARGE_STRAIGHT, game.scoreLargeStraight(testLS));
-		player1.setScore(THREE_OF_A_KIND, game.scoreOfAKind(test3K,3));
-		player1.setScore(FOUR_OF_A_KIND, game.scoreOfAKind(test4K,4));
-		player1.setScore(YAHTZEE, game.scoreOfAKind(testYZ,5));
+		player1.setScore(Constants.FULL_HOUSE_ENUM, game.scoreFullHouse(testFH));
+		player1.setScore(Constants.SMALL_STRAIGHT_ENUM, game.scoreSmallStraight(testSS));
+		player1.setScore(Constants.LARGE_STRAIGHT_ENUM, game.scoreLargeStraight(testLS));
+		player1.setScore(Constants.THREE_OF_A_KIND_ENUM, game.scoreOfAKind(test3K,3));
+		player1.setScore(Constants.FOUR_OF_A_KIND_ENUM, game.scoreOfAKind(test4K,4));
+		player1.setScore(Constants.YAHTZEE_ENUM, game.scoreOfAKind(testYZ,5));
 		
 		player1.calculateScores();
 		player1.printScores();
@@ -232,32 +307,14 @@ public class YahtzeeController extends GraphicsProgram{
 	}
 
 	
-	private static final int NUMBER_OF_DICE = 5;
-	private static final int ONES = 1;
-	private static final int TWOES = 2;
-	private static final int THREES = 3;
-	private static final int FOURS = 4;
-	private static final int FIVES = 5;
-	private static final int SIXES = 6;
-	private static final int THREE_OF_A_KIND = 8;
-	private static final int FOUR_OF_A_KIND = 9;
-	private static final int FULL_HOUSE = 10;
-	private static final int SMALL_STRAIGHT = 11;
-	private static final int LARGE_STRAIGHT = 12;
-	private static final int YAHTZEE = 13;
-	private static final int TOP_BOARDER = 25;
-	private static final int SIDE_BOARDER = 25;
-	private static final int X_INDEX_START = 150;
-
-	
-	private GameLogic game = new GameLogic();
+	private GameLogic game; 
 	
 	// objects to track dice graphics and dice logic
 	private ArrayList<Dice> dice = new ArrayList<Dice>();
 	private ArrayList<DiceGraphics> diceGraphics = new ArrayList<DiceGraphics>();
 		
 	// objects to track player graphics and player scores
-	private ArrayList<PlayerScores> playerList = new ArrayList<PlayerScores>();
+	private ArrayList<PlayerScores> playerListScores = new ArrayList<PlayerScores>();
 	private ArrayList<PlayerGraphics> playerListGraphics = new ArrayList<PlayerGraphics>();
 	private PlayerScores currentPlayerScore = null;
 	private PlayerGraphics currentPlayerGraphics = null;
@@ -266,12 +323,9 @@ public class YahtzeeController extends GraphicsProgram{
 	
 	private Dice die = new Dice(true);
 	private PlayerScores player1 = new PlayerScores();
-	private GameCanvas canvas;
-	private GLabel rollAgain = new GLabel("Roll Again");
+	private TextLabel rollAgain; 
 	private CategoryGraphics categoryDisplay = new CategoryGraphics();
 	private int numberOfPlayers = 0;
-
-	
 
 
 }

@@ -6,6 +6,8 @@ public class GameLogic {
 	
 	
 	
+
+	
 	public int scoreSameDice(ArrayList<Dice> dice, int diceFace){
 		
 			return(scoreSameDice(Dice.countDiceRolled(dice), diceFace));
@@ -104,36 +106,54 @@ public class GameLogic {
 	
 	private int scoreStraight(int[] numberOfTimesRolled, int type){
 	
-		int missedDice = 0;
+		int consecutiveCount = 0;
 		
 		// run through the dice to see how many numbers were NOT rolled
 		// if there is a missing number 
 		for (int i : numberOfTimesRolled){
 			if (i == 0){
-				missedDice++;
+				consecutiveCount =0;
+			} else{
+				consecutiveCount++;
+				// check if condition is met
+
+				if (type == LARGE_STRAIGHT_ENUM){
+					if (consecutiveCount == 5){
+						return(LARGE_STRAIGHT_SCORE);
+					}
+				}
+						
+				if (type == SMALL_STRAIGHT_ENUM){
+					if (consecutiveCount == 4 ){
+						return(SMALL_STRAIGHT_SCORE);
+					}
+				}				
 			}
 		}
 		
-		// check which straight we are testing for and return score
-		
-		if (type == LARGE_STRAIGHT_ENUM){
-			if (missedDice == 0){
-				return(LARGE_STRAIGHT_SCORE);
-			}
-		}
-		
-		if (type == SMALL_STRAIGHT_ENUM){
-			if (missedDice <= 1){
-				return(SMALL_STRAIGHT_SCORE);
-			}
-		}
 		//get here as qualifications for straight not met so return 0
 		return(0);
 	}
 
+	public int scoreChance(ArrayList<Dice> dice){
+		return(scoreChance(Dice.countDiceRolled(dice)));
 		
-	private static final int SMALL_STRAIGHT_ENUM = 12;
-	private static final int LARGE_STRAIGHT_ENUM = 13;
+	}
+	
+	public int scoreChance(int[] numberOfTimesRolled){
+		int value = 1;
+		int score = 0;
+		
+		for( int d: numberOfTimesRolled){
+			score += d*value++;
+		}	
+		return(score);
+		
+	}	
+	
+
+	private static final int SMALL_STRAIGHT_ENUM = 11;
+	private static final int LARGE_STRAIGHT_ENUM = 12;
 	private static final int LARGE_STRAIGHT_SCORE = 40;
 	private static final int SMALL_STRAIGHT_SCORE = 30;
 	private static final int FULL_HOUSE_SCORE = 25;

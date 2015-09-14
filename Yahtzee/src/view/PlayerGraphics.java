@@ -23,20 +23,33 @@ public class PlayerGraphics {
 	}
 	
 	public boolean checkScoreObjectSelected(GObject gameElement){
-		
-		GObject temp;
-		
+				
 		for ( UserScoreDisplay object: scores){
 			
-			temp = object.getScoreDisplayObject();
 			if(gameElement.equals(object.getScoreDisplayObject())){
-				System.out.println("clicked on score object");
-				// TO-DO
 				return(true);
 			}
 			
 		}
 		return(false);
+	}
+	
+	public Integer getIndexScoreObjectSelected(GObject gameElement){
+		
+		for ( UserScoreDisplay object: scores){
+			
+			if(gameElement.equals(object.getScoreDisplayObject())){
+				return(object.getIndex());
+			}
+			
+		}
+		return(null);
+	}
+	
+	
+	public void setDipslayObject(int indexID, int score){
+		
+			scores[indexID].setScoreDisplay(score);
 	}
 	
 	
@@ -52,8 +65,6 @@ public class PlayerGraphics {
 	
 
 	
-	
-	private static final double CELL_HEIGHT = 30;
 	private static final int MAX_SCORES = 17;
 
 	
