@@ -30,6 +30,11 @@ public class DiceGraphics {
 		
 	}
 	
+	public void unselectDie(){
+		selected = false;
+		updateDieSelected(selected);
+	}
+	
 	
 	private void updateDieSelected(boolean val){
 		

@@ -1,13 +1,18 @@
 package control;
 
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+
+import javax.swing.*;
 
 import Model.Dice;
 import Model.GameLogic;
 import Model.PlayerScores;
 import Model.Constants;
+import acm.graphics.GLabel;
 import acm.graphics.GObject;
 import acm.program.GraphicsProgram;
 import view.CategoryGraphics;
@@ -26,9 +31,15 @@ public class YahtzeeController extends GraphicsProgram{
 
 		
 		game = new GameLogic();
+		this.setBackground(Constants.BACKGROUND_COLOR);
 
 		rollAgain = new TextLabel(100,30,"Roll Again");
 		add(rollAgain.getLabelDisplay(), xOffset, yOffset);
+		rollNumberLabel = new TextLabel(100,30, " Roll Number: " + 1 + " ");
+		
+		yOffset += rollAgain.getLabelDisplay().getHeight() + 10;
+		
+		add(rollNumberLabel.getLabelDisplay(), xOffset, yOffset);
 		
 		yOffset += rollAgain.getLabelDisplay().getHeight() * 2;
 		
@@ -45,11 +56,17 @@ public class YahtzeeController extends GraphicsProgram{
 		add(categoryDisplay.getCategoryGridObject(), Constants.X_INDEX_START, Constants.TOP_BOARDER);
 		
 		addPlayer();
+		addPlayer();
 		currentPlayer = 0;
-		currentPlayerScore = playerListScores.get(currentPlayer);
-		currentPlayerGraphics = playerListGraphics.get(currentPlayer);
-		
+		playerListGraphics.get(currentPlayer).setHighlightUser(true);
+		setUserCategorySelectState(false);
+		resetRollCount();
 		addMouseListeners();
+		
+		userMessage = new TextLabel(500, Constants.DEFAULT_CELL_HEIGHT, Constants.DEFAULT_MESSAGE);
+		yOffset = categoryDisplay.getCategoryGridObject().getHeight() + Constants.TOP_BOARDER + Constants.DEFAULT_CELL_HEIGHT * 2;
+		add(userMessage.getLabelDisplay(), Constants.SIDE_BOARDER, yOffset);
+		
 	}
 	
 	
@@ -88,13 +105,52 @@ public class YahtzeeController extends GraphicsProgram{
 	
 	
 	
+
+	
 	public void run(){
+		
+
+
 		
 		PlayerScores playerScore;
 		
-		addPlayer();
+		
+			
+		endButton.addActionListener(this);
+		startButton.addActionListener(this);
+		add(startButton,SOUTH);
+		add(endButton, SOUTH);
 
-		rollDice();
+		
+		selection1.setSelected(true);
+		add(selection1, SOUTH);
+		
+		numPlayers.add(option1);
+		numPlayers.add(option2);
+		numPlayers.add(option3);
+		numPlayers.add(option4);
+
+		option1.setSelected(true);
+		
+		add(option1, SOUTH);
+		add(option2, SOUTH);
+		add(option3, SOUTH);
+		add(option4, SOUTH);
+
+		
+		pick.addItem("Blue");
+		pick.addItem("Green");
+		pick.addItem("purple");
+		pick.addItem("grey");
+
+		pick.setEditable(false);
+		pick.setSelectedItem("Blue");
+		add(pick, SOUTH);
+		
+		
+		textEntryField = new JTextField("enter name", 20);
+		add(textEntryField, CENTER);
+		textEntryField.addActionListener(this);
 		
 		
 		while(true){
@@ -103,18 +159,14 @@ public class YahtzeeController extends GraphicsProgram{
 		}
 	}
 	
-	private void rollDice(){
+	public void actionPerformed(ActionEvent e){
+		String command = e.getActionCommand();
 		
-		int i =0;	
-		Dice.rollDice(dice);
+		System.out.println(" action listener " + command);
 		
-		for (Dice d: dice){
-			diceGraphics.get(i++).setDiceValue(d.getDiceValue());
-		}
+		
 		
 	}
-	
-	
 	
 	public void mouseClicked(MouseEvent mouseEvent){
 
@@ -129,24 +181,35 @@ public class YahtzeeController extends GraphicsProgram{
 	
 	private void takeActionOnClick(GObject gameElement){
 		
-		UserScoreDisplay temp;
-		Integer scoreCellIndex;
 		
 		// Check if user clicked on a dice
 		if (CheckDiceObjectClicked(gameElement)){
 			return;
 		}
 		
-		// check to see if user clicked on a score cell for current player
+		// check to see if user clicked on a score cell if active
+		if (categorySelectState){
+			checkScoreCategorySelected(gameElement);
+		}
+	}
+	
+	private void checkScoreCategorySelected(GObject gameElement){
+		
+		Integer scoreCellIndex;
+		
 		if (getCurrentUserGraphics().checkScoreObjectSelected(gameElement)){
 			
 			scoreCellIndex = getCurrentUserGraphics().getIndexScoreObjectSelected(gameElement);
-			if (scoreCellIndex != null){				
-				getCurrentUserGraphics().setDipslayObject(scoreCellIndex, scoreDice(dice,scoreCellIndex));
-				getCurrentUserScores().setScore(scoreCellIndex,scoreDice(dice,scoreCellIndex));
+			if (scoreCellIndex != null){
+				if (!getCurrentUserGraphics().getCellProtectedState(scoreCellIndex)){
+					getCurrentUserGraphics().setDipslayObject(scoreCellIndex, scoreDice(dice,scoreCellIndex));
+					getCurrentUserScores().setScore(scoreCellIndex,scoreDice(dice,scoreCellIndex));
+					setNextUser();
+				} else{
+					System.out.println("can't overwrite selected cell");
+				}
 			}
 		}		
-		
 	}
 	
 	
@@ -166,25 +229,66 @@ public class YahtzeeController extends GraphicsProgram{
 			}
 		}
 		return(false);
-		
 	}
+
+		
 	
-	
-	
+	private void rollDice(){
+		
+		int i =0;	
+		
+		
+		if (rollNumber < Constants.NUMBER_OF_ROLLS){
+		
+			Dice.rollDice(dice);
+		
+			for (Dice d: dice){
+				diceGraphics.get(i++).setDiceValue(d.getDiceValue());
+			}
+			//update roll count label
+			rollNumber++;
+			rollNumberLabel.setLabel(" Roll Number: " + rollNumber + " ");
+
+			if (rollNumber >= Constants.NUMBER_OF_ROLLS){
+				setUserCategorySelectState(true);
+				rollAgain.setFillColor(Constants.INACTIVE_DEFAULT_FILL_COLOR);
+			}
+		}	
+	}
+
+
+
+	private void setUserCategorySelectState(boolean state){
+		
+		if(state){
+			currentPlayerScore = playerListScores.get(currentPlayer);
+			currentPlayerGraphics = playerListGraphics.get(currentPlayer);
+			categorySelectState = true;
+		} else{
+			currentPlayerScore = playerListScores.get(currentPlayer);
+			currentPlayerGraphics = null;
+			categorySelectState = false;
+		}
+	}
 	
 	private void setNextUser(){
 		
 		
-		if (currentPlayer < numberOfPlayers){
+		playerListGraphics.get(currentPlayer).setHighlightUser(false);
+		if (currentPlayer < numberOfPlayers -1){
 			currentPlayer++;
 		} else{
 			currentPlayer = 0;
+			turns++;
 		}
 		
-		currentPlayer++;
-		currentPlayerScore = playerListScores.get(currentPlayer);
-		currentPlayerGraphics = playerListGraphics.get(currentPlayer);
-		
+		if (turns < Constants.NUMBER_OF_TURNS){
+			resetRollCount();
+			playerListGraphics.get(currentPlayer).setHighlightUser(true);
+			setUserCategorySelectState(false);
+		} else
+			endGame();
+
 	}
 	
 	private PlayerGraphics getCurrentUserGraphics(){
@@ -196,6 +300,19 @@ public class YahtzeeController extends GraphicsProgram{
 	private PlayerScores getCurrentUserScores(){
 		return(playerListScores.get(currentPlayer));
 		
+	}
+	
+	private void resetRollCount(){
+		
+		for (DiceGraphics d: diceGraphics){
+			d.unselectDie();
+			dice.get(diceGraphics.indexOf(d)).unselectState();
+		}
+		rollNumber = 0;
+		rollDice();
+		rollAgain.setFillColor(Constants.ACTIVE_DEFAULT_FILL_COLOR);
+		rollNumberLabel.setLabel(" Roll #: " + rollNumber + " ");
+
 	}
 	
 	
@@ -264,7 +381,15 @@ public class YahtzeeController extends GraphicsProgram{
 			
 	}
 	
-	
+	private void endGame(){
+		
+		for (PlayerScores p : playerListScores){
+			
+			p.calculateScores();
+			p.printScores();
+		}
+		
+	}
 	
 	
 	private void testDice (){
@@ -319,13 +444,37 @@ public class YahtzeeController extends GraphicsProgram{
 	private PlayerScores currentPlayerScore = null;
 	private PlayerGraphics currentPlayerGraphics = null;
 	private int currentPlayer = 0;
+	private int rollNumber = 0;
+	private int turns = 0;
+	private boolean categorySelectState = false;
 	
 	
 	private Dice die = new Dice(true);
 	private PlayerScores player1 = new PlayerScores();
 	private TextLabel rollAgain; 
+	private TextLabel rollNumberLabel;
 	private CategoryGraphics categoryDisplay = new CategoryGraphics();
 	private int numberOfPlayers = 0;
+	
+	private TextLabel userMessage;
+	
+	
+	
+	JTextField inputText = new JTextField("Press Return", 40); 
+	JTextArea textArea = new JTextArea(5,20);
+	
+	JButton startButton = new JButton("Start");
+	JButton endButton = new JButton("Stop");
+		
+	JCheckBox selection1 = new JCheckBox("selection 1");
+		
+	JRadioButton option1 = new JRadioButton("1 Player");
+	JRadioButton option2 = new JRadioButton("2 Players");
+	JRadioButton option3 = new JRadioButton("3 Players");
+	JRadioButton option4 = new JRadioButton("4 Players");
+	ButtonGroup numPlayers = new ButtonGroup();
 
-
+	JComboBox pick = new JComboBox();
+	
+	JTextField textEntryField;
 }

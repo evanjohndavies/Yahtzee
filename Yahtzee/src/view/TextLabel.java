@@ -6,6 +6,8 @@ import acm.graphics.GObject;
 import acm.graphics.GRect;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import Model.Constants;
 
@@ -36,11 +38,11 @@ public class TextLabel {
 		message.setVisible(true);
 		
 		yOffset = (.5* height) + (.5* message.getHeight());
-		xOffset = ((Constants.PLAYER_SCORE_CELL_WIDTH/2) - (message.getWidth()/2));
+		xOffset = ((width/2) - (message.getWidth()/2));
 		label.setVisible(true);
 		
 		label.add(textBox);
-		label.add(message,xOffset, yOffset);	
+		label.add(message,xOffset, yOffset);
 	
 	}
 	

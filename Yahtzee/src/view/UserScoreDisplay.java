@@ -48,10 +48,36 @@ public class UserScoreDisplay {
 		
 	}
 	
+	public boolean getProtectedState(){
+		return(cellProtected);
+	}
+	
+	public void setProtected(){
+		cellProtected = true;
+	}
+	
+	public void setUnprotected(){
+		cellProtected = false;
+		
+	}
+	
+	public void setHightlight(boolean state){
+		
+		if (!getProtectedState()){
+			
+			if (state){
+			scoreBox.setFillColor(Constants.CELL_SELCTED_USER_COLOR);
+			}
+			else{
+				scoreBox.setFillColor(Constants.CELL_DEFAULT_COLOR);
+			}
+			
+		}
+		
+	}
+	
+	
 	private TextLabel scoreBox;
-	// private GCompound cellGraphic = new GCompound();
 	private int index;
 	private boolean cellProtected = false;
-	// private GLabel score = new GLabel("  ");
-	// private GRect box = new GRect(0,0,Constants.PLAYER_SCORE_CELL_WIDTH, Constants.PLAYER_SCORE_CELL_HEIGHT );
 }

@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.util.ArrayList;
 
+import Model.Constants;
 import acm.graphics.*;
 
 
@@ -53,6 +54,23 @@ public class PlayerGraphics {
 	}
 	
 	
+	public boolean getCellProtectedState(int index){
+		
+		// bounds checking in score array
+		if (index < MAX_SCORES){
+			return(scores[index].getProtectedState());
+		}
+		return(true);
+		
+	}
+	
+	public void setHighlightUser(boolean state){
+		
+		for (UserScoreDisplay o: scores ){	
+			o.setHightlight(state);
+		}	
+	}
+	
 	private void createPlayerGrid(){
 				
 		for (int i=0; i< MAX_SCORES; i++){
@@ -61,7 +79,15 @@ public class PlayerGraphics {
 			displayElements.add(scores[i].getScoreDisplayObject());
 		}
 		
+		//  set total fields as protected
+		scores[Constants.UPPER_SCORE_SUBTOTAL_ENUM].setProtected();
+		scores[Constants.UPPER_SCORE_BONUS_ENUM].setProtected();
+		scores[Constants.LOWER_SCORE_SUBTOTAL_ENUM].setProtected();
+		scores[Constants.TOTAL_ENUM].setProtected();
+		
 	}
+	
+	
 	
 
 	

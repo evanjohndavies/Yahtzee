@@ -76,6 +76,11 @@ public class Dice {
 		
 		return(diceSelected);
 	}
+
+	public void unselectState(){
+		diceSelected = false;
+		
+	}
 	
 	
 	public static String toString (ArrayList <Dice> diceRoll){
