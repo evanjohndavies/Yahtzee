@@ -53,6 +53,11 @@ public class PlayerGraphics {
 			scores[indexID].setScoreDisplay(score);
 	}
 	
+	public void updateDipslayObject(int indexID, int score){
+		
+		scores[indexID].updateScoreDisplay(score);
+	}
+	
 	
 	public boolean getCellProtectedState(int index){
 		

@@ -61,6 +61,11 @@ public class TextLabel {
 		this.textBox.setFillColor(color);
 	}
 	
+	public String getLabel(){
+		return(message.getLabel());
+		
+	}
+	
 
 	private GLabel message;
 	private GRect textBox;

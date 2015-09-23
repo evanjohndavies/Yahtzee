@@ -37,6 +37,10 @@ public class UserScoreDisplay {
 		return(false);
 	}
 	
+	public void updateScoreDisplay(int input){
+		scoreBox.setLabel(String.valueOf(input));		
+	}
+	
 	
 	public void setIndex(int value){
 		

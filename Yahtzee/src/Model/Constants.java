@@ -57,7 +57,10 @@ public interface Constants {
 	public static final Color TITLE_COLOR = Color.WHITE;
 	public static final Color CATEGORY_LABEL_COLOR = Color.RED;
 	
-	public static final String DEFAULT_MESSAGE = "Select Dice, click Roll Again to roll remaning dice";
+	public static final String ROLL_DICE_MESSAGE = "Select Dice, click Roll Again to roll remaning dice";
+	public static final String GAME_START_MESSAGE = "Enter User Names, Click Start to Begin Play";
+	public static final String SELECT_SCORE_MESSAGE = "Click on the Category You Want to Use";
+	public static final String ADD_MORE_USERS_MESSAGE = "Need to Enter at Least 2 Players";
 
 	
 
