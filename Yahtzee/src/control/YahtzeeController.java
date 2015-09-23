@@ -1,9 +1,7 @@
 package control;
 
-import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
@@ -13,14 +11,12 @@ import Model.Dice;
 import Model.GameLogic;
 import Model.PlayerScores;
 import Model.Constants;
-import acm.graphics.GLabel;
 import acm.graphics.GObject;
 import acm.program.GraphicsProgram;
 import view.CategoryGraphics;
 import view.DiceGraphics;
 import view.PlayerGraphics;
 import view.TextLabel;
-import view.UserScoreDisplay;
 
 
 public class YahtzeeController extends GraphicsProgram{
