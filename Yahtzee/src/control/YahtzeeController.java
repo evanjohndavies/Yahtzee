@@ -94,11 +94,11 @@ public class YahtzeeController extends GraphicsProgram{
 		} else {
 			if(command.compareTo("Stop") == 0){
 			endGame();
-			} else{
-				if(!gameStartSelected){
+			}
+			
+		if(!gameStartSelected && e.getSource() == textEntryField){
 					addPlayer(command);
 					textEntryField.setText("");
-					}
 				}
 			}
 		}
@@ -429,8 +429,8 @@ public class YahtzeeController extends GraphicsProgram{
 	
 	JLabel label = new JLabel("Enter Name");
 	
-	JTextField inputText = new JTextField("Enter Name", 40); 
-	JTextArea textArea = new JTextArea(5,20);
+	//JTextField inputText = new JTextField("Enter Name", 40); 
+	//JTextArea textArea = new JTextArea(5,20);
 	
 	JButton startButton = new JButton("Start");
 	JButton endButton = new JButton("Stop");

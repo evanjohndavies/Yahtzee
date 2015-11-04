@@ -7,6 +7,7 @@ import acm.graphics.GLabel;
 import acm.graphics.GObject;
 import acm.graphics.GRect;
 import Model.Constants;
+import Model.Scores;
 
 
 public class CategoryGraphics {
@@ -51,7 +52,7 @@ public class CategoryGraphics {
 		yOffset += Constants.DEFAULT_CELL_HEIGHT;
 
 		
-		for (String s : upperCategoryNames){
+		for (Scores s : upperCategoryNames){
 			
 			tempRect = new GRect(xOffset, yOffset, Constants.DEFAULT_CATEGORY_WIDTH, Constants.DEFAULT_CELL_HEIGHT );
 			tempRect.setFillColor(Constants.CATEGORY_COLOR);
@@ -59,7 +60,7 @@ public class CategoryGraphics {
 			tempRect.setVisible(true);
 			categoryGrid.add(tempRect, xOffset, yOffset);
 			
-			tempLabel = new GLabel (s);
+			tempLabel = new GLabel (s.displayName());
 			tempLabel.setFont(Constants.DEFAULT_FONT);
 			tempLabel.setVisible(true);
 			tempLabel.setColor(Constants.CATEGORY_LABEL_COLOR);
@@ -105,7 +106,7 @@ public class CategoryGraphics {
 		yOffset += Constants.DEFAULT_CELL_HEIGHT ;		
 		
 		
-		for (String s : LowerCategoryNames){
+		for (Scores s : LowerCategoryNames){
 			
 			tempRect = new GRect(xOffset, yOffset, Constants.DEFAULT_CATEGORY_WIDTH, Constants.DEFAULT_CELL_HEIGHT  );
 			tempRect.setFillColor(Constants.CATEGORY_COLOR);
@@ -113,7 +114,7 @@ public class CategoryGraphics {
 			tempRect.setVisible(true);
 			categoryGrid.add(tempRect, xOffset, yOffset);
 			
-			tempLabel = new GLabel (s);
+			tempLabel = new GLabel (s.displayName());
 			tempLabel.setFont(Constants.DEFAULT_FONT);
 			tempLabel.setVisible(true);
 			tempLabel.setColor(Constants.CATEGORY_LABEL_COLOR);
@@ -167,9 +168,8 @@ public class CategoryGraphics {
 	
 	
 	private static GCompound categoryGrid = new GCompound ();
-	private String[] LowerCategoryNames = {"Three of a Kind", "Four of a Kind", "Full House (25)",
-			"Small Straight(30)", "Large Straight(40)", "Yahtzee!(50)", "Chance"};
+	private Scores[] LowerCategoryNames = {Scores.THREE_OF_A_KIND, Scores.FOUR_OF_A_KIND, Scores.FULL_HOUSE, Scores.SM_STRAIGHT, Scores.LG_STRAIGHT, Scores.YAHTZEE, Scores.CHANCE};
 
-	private String[] upperCategoryNames = {"Ones", "Twos", "Threes", "Fours", "Fives", "Sixes"};
+	private Scores[] upperCategoryNames = {Scores.ONES, Scores.TWOS, Scores.THREES, Scores.FOURS, Scores.FIVES, Scores.SIXES}; 
 	
 }
