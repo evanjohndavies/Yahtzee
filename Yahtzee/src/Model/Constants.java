@@ -6,7 +6,7 @@ import java.awt.Font;
 public interface Constants {
 	
 	public static final int NUMBER_OF_DICE = 5;
-	public static final int ONES_ENUM = 0;
+	/*public static final int ONES_ENUM = 0;
 	public static final int TWOES_ENUM = 1;
 	public static final int THREES_ENUM = 2;
 	public static final int FOURS_ENUM = 3;
@@ -24,6 +24,8 @@ public interface Constants {
 	public static final int CHANCE_ENUM = 14;
 	public static final int LOWER_SCORE_SUBTOTAL_ENUM = 15;
 	public static final int TOTAL_ENUM = 16;
+	*/
+
 
 	
 	public static final int TOP_BOARDER = 25;

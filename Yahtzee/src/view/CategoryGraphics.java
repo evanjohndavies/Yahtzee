@@ -79,7 +79,7 @@ public class CategoryGraphics {
 		tempRect.setVisible(true);
 		categoryGrid.add(tempRect, xOffset, yOffset);
 		
-		tempLabel = new GLabel ("Upper Score");
+		tempLabel = new GLabel (Scores.UPPER_SCORES_SUBTOTAL.displayName());
 		tempLabel.setFont(Constants.DEFAULT_SUBTOTAL_FONT);
 		tempLabel.setVisible(true);
 		
@@ -95,7 +95,7 @@ public class CategoryGraphics {
 		tempRect.setVisible(true);
 		categoryGrid.add(tempRect, xOffset, yOffset);
 		
-		tempLabel = new GLabel ("Upper Bonus");
+		tempLabel = new GLabel (Scores.UPPER_SCORE_BONUS.displayName());
 		tempLabel.setFont(Constants.DEFAULT_SUBTOTAL_FONT);
 		tempLabel.setVisible(true);
 		
@@ -134,7 +134,7 @@ public class CategoryGraphics {
 		tempRect.setVisible(true);
 		categoryGrid.add(tempRect, xOffset, yOffset);
 		
-		tempLabel = new GLabel ("Lower Score");
+		tempLabel = new GLabel (Scores.LOWER_SCORES_SUBTOTAL.displayName());
 		tempLabel.setFont(Constants.DEFAULT_SUBTOTAL_FONT);
 		tempLabel.setVisible(true);
 		
@@ -150,8 +150,8 @@ public class CategoryGraphics {
 		tempRect.setVisible(true);
 		categoryGrid.add(tempRect, xOffset, yOffset);
 		
-		tempLabel = new GLabel ("TOTAL");
-		tempLabel.setFont(Constants.DEFAULT_FONT);
+		tempLabel = new GLabel (Scores.TOTAL.displayName());
+		tempLabel.setFont(Constants.DEFAULT_SUBTOTAL_FONT);
 		tempLabel.setVisible(true);
 		
 		labelYOffset = yOffset + (.5* Constants.DEFAULT_CELL_HEIGHT ) + (.5* tempLabel.getHeight());

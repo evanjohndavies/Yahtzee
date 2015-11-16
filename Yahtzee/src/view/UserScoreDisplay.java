@@ -10,13 +10,14 @@ import acm.graphics.GObject;
 import acm.graphics.GRect;
 
 import Model.Constants;
+import Model.Scores;
 
 
 public class UserScoreDisplay {
 	
 	public UserScoreDisplay(){
 		scoreBox = new TextLabel(Constants.PLAYER_SCORE_CELL_WIDTH, Constants.PLAYER_SCORE_CELL_HEIGHT, "  ");
-		index = 0;
+		category = null;
 	}
 	
 	
@@ -37,12 +38,12 @@ public class UserScoreDisplay {
 		return(false);
 	}
 	
+	
 	public void updateScoreDisplay(int input){
 		scoreBox.setLabel(String.valueOf(input));		
 	}
 	
-	
-	public void setIndex(int value){
+	/* public void setIndex(int value){
 		
 		index = value;
 	}
@@ -50,6 +51,17 @@ public class UserScoreDisplay {
 	public int getIndex(){
 		return(index);
 		
+	}
+	*/
+	
+	public void setCategory(Scores value){
+		
+		category = value;
+		
+	}
+	
+	public Scores getCategory(){
+		return(category);
 	}
 	
 	public boolean getProtectedState(){
@@ -82,6 +94,7 @@ public class UserScoreDisplay {
 	
 	
 	private TextLabel scoreBox;
-	private int index;
+	// private int index;
+	private Scores category;
 	private boolean cellProtected = false;
 }

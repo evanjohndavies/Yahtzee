@@ -10,6 +10,7 @@ import javax.swing.*;
 import Model.Dice;
 import Model.GameLogic;
 import Model.PlayerScores;
+import Model.Scores;
 import Model.Constants;
 import acm.graphics.GObject;
 import acm.program.GraphicsProgram;
@@ -17,6 +18,7 @@ import view.CategoryGraphics;
 import view.DiceGraphics;
 import view.PlayerGraphics;
 import view.TextLabel;
+import view.UserScoreDisplay;
 
 
 public class YahtzeeController extends GraphicsProgram{
@@ -168,23 +170,24 @@ public class YahtzeeController extends GraphicsProgram{
 		}
 	}
 	
+
+
 	private void checkScoreCategorySelected(GObject gameElement){
 		
-		Integer scoreCellIndex;
+		Scores scoreType;
+		PlayerGraphics player = playerListGraphics.get(currentPlayer);
+		UserScoreDisplay scoreObj = player.checkScoreObjectSelected(gameElement);
 		
-		if (getCurrentUserGraphics().checkScoreObjectSelected(gameElement)){
+		
+		if (scoreObj != null && !scoreObj.getProtectedState()){
 			
-			scoreCellIndex = getCurrentUserGraphics().getIndexScoreObjectSelected(gameElement);
-			if (scoreCellIndex != null){
-				if (!getCurrentUserGraphics().getCellProtectedState(scoreCellIndex)){
-					getCurrentUserGraphics().setDipslayObject(scoreCellIndex, scoreDice(dice,scoreCellIndex));
-					getCurrentUserScores().setScore(scoreCellIndex,scoreDice(dice,scoreCellIndex));
-					setNextUser();
-				} else{
-					//System.out.println("can't overwrite selected cell");
-				}
-			}
-		}		
+				scoreType = scoreObj.getCategory();
+				scoreObj.setScoreDisplay(scoreDice(dice,scoreType));
+				getCurrentUserScores().setScore(scoreType.getIndex(),scoreDice(dice,scoreType));
+				setNextUser();
+			} else{
+				//System.out.println("can't overwrite selected cell");
+			}	
 	}
 	
 	
@@ -254,16 +257,18 @@ public class YahtzeeController extends GraphicsProgram{
 		playerListGraphics.get(currentPlayer).setHighlightUser(false);
 		playerNames.get(currentPlayer).setFillColor(Constants.INACTIVE_DEFAULT_FILL_COLOR);
 		
+
+		
 		// update scores and display updated totals
 		playerListScores.get(currentPlayer).calculateScores();
-		playerListGraphics.get(currentPlayer).updateDipslayObject(Constants.UPPER_SCORE_BONUS_ENUM, 
-				playerListScores.get(currentPlayer).getScore(Constants.UPPER_SCORE_BONUS_ENUM));
-		playerListGraphics.get(currentPlayer).updateDipslayObject(Constants.UPPER_SCORE_SUBTOTAL_ENUM, 
-				playerListScores.get(currentPlayer).getScore(Constants.UPPER_SCORE_SUBTOTAL_ENUM));
-		playerListGraphics.get(currentPlayer).updateDipslayObject(Constants.LOWER_SCORE_SUBTOTAL_ENUM, 
-				playerListScores.get(currentPlayer).getScore(Constants.LOWER_SCORE_SUBTOTAL_ENUM));
-		playerListGraphics.get(currentPlayer).updateDipslayObject(Constants.TOTAL_ENUM, 
-				playerListScores.get(currentPlayer).getScore(Constants.TOTAL_ENUM));
+		
+		for ( Scores s: sumCategories){
+			
+			playerListGraphics.get(currentPlayer).updateDipslayObject(s.getIndex(),
+					playerListScores.get(currentPlayer).getScore(s.getIndex()));
+			
+		}
+		
 		
 		
 		if (currentPlayer < numberOfPlayers -1){
@@ -285,11 +290,7 @@ public class YahtzeeController extends GraphicsProgram{
 
 	}
 	
-	private PlayerGraphics getCurrentUserGraphics(){
-		
-		return (playerListGraphics.get(currentPlayer));
-		
-	}
+	
 	
 	private PlayerScores getCurrentUserScores(){
 		return(playerListScores.get(currentPlayer));
@@ -310,47 +311,49 @@ public class YahtzeeController extends GraphicsProgram{
 	}
 	
 	
-	private int scoreDice(ArrayList<Dice> dice, int scoreType){
+	
+	private int scoreDice(ArrayList<Dice> dice, Scores scoreType){
+		
 		
 		switch (scoreType){
 		
-		case(Constants.ONES_ENUM): 
+		case ONES: 
 			return (game.scoreSameDice(dice, 1));
 			
-		case(Constants.TWOES_ENUM): 
+		case TWOS: 
 			return (game.scoreSameDice(dice, 2));
 			
-		case(Constants.THREES_ENUM): 
+		case THREES: 
 			return (game.scoreSameDice(dice, 3));
 			
-		case(Constants.FOURS_ENUM): 
+		case FOURS: 
 			return (game.scoreSameDice(dice, 4));
 			
-		case(Constants.FIVES_ENUM): 
+		case FIVES: 
 			return (game.scoreSameDice(dice, 5));
 			
-		case(Constants.SIXES_ENUM): 
+		case SIXES: 
 			return (game.scoreSameDice(dice, 6));
 			
-		case(Constants.THREE_OF_A_KIND_ENUM): 
+		case THREE_OF_A_KIND: 
 			return (game.scoreOfAKind(dice, 3));
 						
-		case(Constants.FOUR_OF_A_KIND_ENUM): 
+		case FOUR_OF_A_KIND: 
 			return (game.scoreOfAKind(dice, 4));
 			
-		case(Constants.YAHTZEE_ENUM): 
+		case YAHTZEE: 
 			return (game.scoreOfAKind(dice, 5));	
 			
-		case(Constants.FULL_HOUSE_ENUM): 
+		case FULL_HOUSE: 
 			return (game.scoreFullHouse(dice));
 		
-		case(Constants.SMALL_STRAIGHT_ENUM): 
+		case SM_STRAIGHT: 
 			return (game.scoreSmallStraight(dice));	
 			
-		case(Constants.LARGE_STRAIGHT_ENUM): 
+		case LG_STRAIGHT: 
 			return (game.scoreLargeStraight(dice));	
 
-		case(Constants.CHANCE_ENUM): 
+		case CHANCE: 
 			return (game.scoreChance(dice));				
 		
 		default:
@@ -381,23 +384,34 @@ public class YahtzeeController extends GraphicsProgram{
 		
 		PlayerScores winner = null;
 		int highScore = 0;
+		boolean tie = false;
 		
 		for (PlayerScores p : playerListScores){
-			if(p.getScore(Constants.TOTAL_ENUM) > highScore){
-				highScore = p.getScore(Constants.TOTAL_ENUM);
+			if(p.getScore(Scores.TOTAL.getIndex()) > highScore){
+				highScore = p.getScore(Scores.TOTAL.getIndex());
 				winner = p;
+			}
+			if(p.getScore(Scores.TOTAL.getIndex()) == highScore){
+				tie = true;
 			}
 		}
 		
-		userMessage.setLabel("The Winner is: " + winner.getPlayerName() + 
-				"  with " + highScore + "  points");
+		if (tie){
+			userMessage.setLabel("Tie Game with " + highScore + "  points");
+		} else{
 
+			userMessage.setLabel("The Winner is: " + winner.getPlayerName() + 
+					"  with " + highScore + "  points");
+		}
 		
 	}
 	
 
 	
 	private GameLogic game; 
+	
+	private Scores[] sumCategories = {Scores.UPPER_SCORE_BONUS, Scores.UPPER_SCORES_SUBTOTAL, 
+										 Scores.LOWER_SCORES_SUBTOTAL, Scores.TOTAL};
 	
 	// objects to track dice graphics and dice logic
 	private ArrayList<Dice> dice = new ArrayList<Dice>();

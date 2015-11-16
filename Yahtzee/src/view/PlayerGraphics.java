@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.util.ArrayList;
 
 import Model.Constants;
+import Model.Scores;
 import acm.graphics.*;
 
 
@@ -23,29 +24,31 @@ public class PlayerGraphics {
 		
 	}
 	
-	public boolean checkScoreObjectSelected(GObject gameElement){
+	public UserScoreDisplay checkScoreObjectSelected(GObject gameElement){
 				
 		for ( UserScoreDisplay object: scores){
 			
 			if(gameElement.equals(object.getScoreDisplayObject())){
-				return(true);
-			}
-			
-		}
-		return(false);
-	}
-	
-	public Integer getIndexScoreObjectSelected(GObject gameElement){
-		
-		for ( UserScoreDisplay object: scores){
-			
-			if(gameElement.equals(object.getScoreDisplayObject())){
-				return(object.getIndex());
+				return(object);
 			}
 			
 		}
 		return(null);
 	}
+	
+/*	public Scores getIndexScoreObjectSelected(GObject gameElement){
+		
+		for ( UserScoreDisplay object: scores){
+			
+			if(gameElement.equals(object.getScoreDisplayObject())){
+				return(object.getCategory());
+			}
+			
+		}
+		return(null);
+	}
+	*/
+	
 	
 	
 	public void setDipslayObject(int indexID, int score){
@@ -77,18 +80,26 @@ public class PlayerGraphics {
 	}
 	
 	private void createPlayerGrid(){
-				
-		for (int i=0; i< MAX_SCORES; i++){
+		
+		for (Scores s: Scores.values()){
+			scores[s.getIndex()]= new UserScoreDisplay();
+			scores[s.getIndex()].setCategory(s);
+			displayElements.add(scores[s.getIndex()].getScoreDisplayObject());
+		}
+		
+/*		for (int i=0; i< MAX_SCORES; i++){
 			scores[i] = new UserScoreDisplay();
 			scores[i].setIndex(i);
 			displayElements.add(scores[i].getScoreDisplayObject());
 		}
 		
+		*/
+		
 		//  set total fields as protected
-		scores[Constants.UPPER_SCORE_SUBTOTAL_ENUM].setProtected();
-		scores[Constants.UPPER_SCORE_BONUS_ENUM].setProtected();
-		scores[Constants.LOWER_SCORE_SUBTOTAL_ENUM].setProtected();
-		scores[Constants.TOTAL_ENUM].setProtected();
+		scores[Scores.UPPER_SCORES_SUBTOTAL.getIndex()].setProtected();
+		scores[Scores.UPPER_SCORE_BONUS.getIndex()].setProtected();
+		scores[Scores.LOWER_SCORES_SUBTOTAL.getIndex()].setProtected();
+		scores[Scores.TOTAL.getIndex()].setProtected();
 		
 	}
 	
